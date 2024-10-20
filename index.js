@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
-
+import advertRouter from "./routes/advert.js";
 
 
 // connect to the database
@@ -13,10 +13,8 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-
-
 // Routes will be used here
-
+app.use(advertRouter);
 
 // listen for incoming requests
 app.listen(4040, () => {

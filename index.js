@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
+import userRouter from "./routes/users.js";
 
 
 
@@ -16,7 +17,7 @@ app.use(cors());
 
 
 // Routes will be used here
-
+app.use(userRouter);
 
 // listen for incoming requests
 app.listen(4040, () => {

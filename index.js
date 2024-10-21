@@ -6,6 +6,7 @@ import advertRouter from "./routes/advert.js";
 
 // connect to the database
 await mongoose.connect(process.env.MONGO_URI);
+
 // create the express app
 const app = express();
 

@@ -20,6 +20,36 @@ export const addAdverts = async (req, res, next) => {
   };
 }
 
+export const getAdverts = async (req, res, next ) => {
+  try {
+      // add filter
+      const {filter = "{}", limit = 10, skip = 0} = req.query;
+      // fetch ads from database
+      const usersCon = await AdvertModel
+      .find(JSON.parse(filter))
+      .limit(limit)
+      .skip(skip);
+      // return response
+      res.status(200).json(usersCon);
+  } catch (error) {
+      next(error);
+  }
+}
+
+export const getOneAdvert = async (req, res, next) => {
+  try {
+      const userCon = await AdvertModel.findById(req.params.id);
+      if (!userCon) {
+          return res.status(404).json({
+              message: "Advert not found"
+          });
+      }
+      res.status(200).json(userCon);
+  } catch (error) {
+      next(error);
+  }
+}
+
 export const updateAdverts = async (req, res, next) => {
    try {
     // validate the input

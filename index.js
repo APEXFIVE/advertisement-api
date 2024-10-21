@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import advertRouter from "./routes/advert.js";
+import categoryRouter from "./routes/category.js";
 
 
 // connect to the database
@@ -16,6 +17,7 @@ app.use(cors());
 
 // Routes will be used here
 app.use(advertRouter);
+app.use(categoryRouter)
 
 // listen for incoming requests
 app.listen(4040, () => {

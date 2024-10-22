@@ -63,7 +63,7 @@ export const updateAdverts = async (req, res, next) => {
     // write updated ads to the database
     const updatedAdvert = await AdvertModel.findOneAndUpdate(
       {
-        id: req.params.id,
+        _id: req.params.id,
         user: req.auth.id
       },
       value,
@@ -102,3 +102,5 @@ export const deleteAdvert = async (req, res, next) => {
     next(error);
   }
 };
+
+// change 

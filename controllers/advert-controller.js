@@ -12,7 +12,14 @@ export const addAdverts = async (req, res, next) => {
       return res.status(422).json(error);
     }
     // write ads to the database
+<<<<<<< HEAD
     await AdvertModel.create(value);
+=======
+    await AdvertModel.create({
+      ...value,
+      user: req.auth.id
+    });
+>>>>>>> bbddae59a62cd83c9f246dec87071e4368a1540b
     // respond to request
     res.status(201).json("Advert was created!");
   } catch (error) {
@@ -22,6 +29,7 @@ export const addAdverts = async (req, res, next) => {
 
 export const getAdverts = async (req, res, next) => {
   try {
+<<<<<<< HEAD
     // Getting query parameters for search filters
     const { title, category, price, limit = 10, skip = 0 } = req.query;
 
@@ -49,6 +57,17 @@ export const getAdverts = async (req, res, next) => {
 
     // Return response
     res.status(200).json(adverts);
+=======
+    // add filter
+    const { filter = "{}", limit = 10, skip = 0 } = req.query;
+    // fetch ads from database
+    const usersCon = await AdvertModel
+      .find(JSON.parse(filter))
+      .limit(limit)
+      .skip(skip);
+    // return response
+    res.status(200).json(usersCon);
+>>>>>>> bbddae59a62cd83c9f246dec87071e4368a1540b
   } catch (error) {
     next(error);
   }
@@ -77,16 +96,26 @@ export const updateAdverts = async (req, res, next) => {
       return res.status(422).json(error);
     }
     // write updated ads to the database
-    const updatedAdvert = await AdvertModel.findByIdAndDelete(req.params.id, req.body, {
-      new: true
-    });
+    const updatedAdvert = await AdvertModel.findOneAndUpdate(
+      {
+        _id: req.params.id,
+        user: req.auth.id
+      },
+      value,
+      { new: true }
+    );
+
     if (!updatedAdvert) {
       return res.status(404).json({
         message: "Advert not found!"
       });
     }
     // respond to rquest
+<<<<<<< HEAD
     res.status(200).json('Advert has been updated!');
+=======
+    res.status(201).json('Advert has been updated!');
+>>>>>>> bbddae59a62cd83c9f246dec87071e4368a1540b
   } catch (error) {
     next(error);
   }
@@ -94,7 +123,14 @@ export const updateAdverts = async (req, res, next) => {
 
 export const deleteAdvert = async (req, res, next) => {
   try {
-    const deletedAdvert = await AdvertModel.findByIdAndDelete(req.params.id);
+    const deletedAdvert = await AdvertModel.findOneAndUpdate(
+
+      {
+        id: req.params.id,
+        user: req.auth.id
+      },
+    );
+     
     if (!deletedAdvert) {
       return res.status(404).json({
         message: "Advert not found"
@@ -105,3 +141,5 @@ export const deleteAdvert = async (req, res, next) => {
     next(error);
   }
 };
+
+// change 

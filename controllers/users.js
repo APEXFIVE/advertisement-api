@@ -60,7 +60,7 @@ export const loginUser = async (req, res, next) => {
     }
 };
 
-export const getprofile = async (req, res, next) => {
+export const getProfile = async (req, res, next) => {
     try {
         console.log(req.auth);
         const user = await UserModel

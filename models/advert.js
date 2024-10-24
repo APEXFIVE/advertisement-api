@@ -14,7 +14,7 @@ const advertSchema = new Schema({
     category: { type: String, required: true },
 
     
-    user: { type:Types.ObjectId, required: true, ref: 'user' }
+    user: { type:Types.ObjectId, required: true, ref: 'User' }
 }, {
     timestamps: true
 });

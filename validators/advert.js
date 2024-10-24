@@ -15,3 +15,4 @@ export const updateAdvertVAlidator = Joi.object({
     price: Joi.number(),
     category: Joi.string()
 });
+

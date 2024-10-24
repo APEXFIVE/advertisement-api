@@ -9,10 +9,12 @@ export const registerUserValidator = Joi.object({
 });
 
 export const loginUserValidator = Joi.object({
-    firstName: Joi.string().required(),
-    lastName: Joi.string().required(),
+    // firstName: Joi.string().required(),
+    // lastName: Joi.string().required(),
+    // above not required 
     email: Joi.string().required(),
     password: Joi.string().required()
+
 });
 
 

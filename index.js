@@ -1,9 +1,7 @@
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
-
 import userRouter from "./routes/users.js";
-
 import advertRouter from "./routes/advert.js";
 import categoryRouter from "./routes/category.js";
 
@@ -22,7 +20,6 @@ app.use(cors());
 // Routes will be used here
 
 app.use(userRouter);
-
 app.use(advertRouter);
 app.use(categoryRouter)
 

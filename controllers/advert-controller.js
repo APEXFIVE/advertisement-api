@@ -11,66 +11,67 @@ export const addAdverts = async (req, res, next) => {
     if (error) {
       return res.status(422).json(error);
     }
-    // write ads to the database
-    await AdvertModel.create({
+
+    // Add the vendorId to the advert (assuming req.user.id contains the vendor's ID)
+    const advertData = {
       ...value,
       user: req.auth.id
-    });
+    };
+
+    // write ads to the database
+    await AdvertModel.create(advertData);
+
     // respond to request
     res.status(201).json("Advert was created!");
   } catch (error) {
     next(error);
-  };
-}
+  }
+};
 
 export const getAdverts = async (req, res, next) => {
   try {
-    // Getting query parameters for search filters
-    const { title, category, price, limit = 10, skip = 0 } = req.query;
-
-    // Build a filter object based on the query parameters
+    const { title, category, price, limit = 0, skip = 0 } = req.query;
     let filter = {};
 
     if (title) {
-      //regex for case-insensitive title search
       filter.title = { $regex: title, $options: 'i' };
     }
-
     if (category) {
       filter.category = category;
     }
-
     if (price) {
       filter.price = price;
     }
 
-    // Fetch ads from the database with the filter
+    // Fetch ads and populate vendor-specific fields from the User model
     const adverts = await AdvertModel
       .find(filter)
+      .populate({
+        path: 'user',
+        select: 'Product businessName category contactNumber' // Choose fields to populate
+      })
       .limit(limit)
       .skip(skip);
 
-    // Return response
     res.status(200).json(adverts);
   } catch (error) {
     next(error);
   }
 };
 
-
 export const getOneAdvert = async (req, res, next) => {
   try {
-    const userCon = await AdvertModel.findById(req.params.id);
-    if (!userCon) {
+    const advert = await AdvertModel.findById(req.params.id);
+    if (!advert) {
       return res.status(404).json({
         message: "Advert not found"
       });
     }
-    res.status(200).json(userCon);
+    res.status(200).json(advert);
   } catch (error) {
     next(error);
   }
-}
+};
 
 export const updateAdverts = async (req, res, next) => {
   try {
@@ -79,8 +80,9 @@ export const updateAdverts = async (req, res, next) => {
     if (error) {
       return res.status(422).json(error);
     }
-    // write updated ads to the database
-    const updatedAdvert = await AdvertModel.findOneAndUpdate(
+
+    // Find the advert and ensure the vendor updating the advert is the owner
+    const advert = await AdvertModel.findOneAndUpdate(
       {
         _id: req.params.id,
         user: req.auth.id
@@ -88,38 +90,38 @@ export const updateAdverts = async (req, res, next) => {
       value,
       { new: true }
     );
-
-    if (!updatedAdvert) {
-      return res.status(404).json({
-        message: "Advert not found!"
-      });
+    if (!advert) {
+      return res.status(404).json({ message: "Advert not found!" });
     }
-    // respond to rquest
-    res.status(201).json('Advert has been updated!');
-  } catch (error) {
-    next(error);
-  }
-}
 
-export const deleteAdvert = async (req, res, next) => {
-  try {
-    const deletedAdvert = await AdvertModel.findOneAndUpdate(
+    // if (advert.user.toString() !== req.user.id) {
+    //   return res.status(403).json({ message: "You are not authorized to update this advert." });
+    // }
 
-      {
-        id: req.params.id,
-        user: req.auth.id
-      },
-    );
-     
-    if (!deletedAdvert) {
-      return res.status(404).json({
-        message: "Advert not found"
-      });
-    }
-    res.status(200).json("Advert has been succesfully deleted!")
+    // Update the advert
+    const updatedAdvert = await AdvertModel.findByIdAndUpdate(req.params.id, value, { new: true });
+    res.status(200).json('Advert has been updated!');
   } catch (error) {
     next(error);
   }
 };
 
-// change 
+export const deleteAdvert = async (req, res, next) => {
+  try {
+    // Find the advert and ensure the vendor deleting the advert is the owner
+    const advert = await AdvertModel.findById(req.params.id);
+    if (!advert) {
+      return res.status(404).json({ message: "Advert not found" });
+    }
+
+    // if (advert.vendorId.toString() !== req.user.id) {
+    //   return res.status(403).json({ message: "You are not authorized to delete this advert." });
+    // }
+
+    // Delete the advert
+    await AdvertModel.findByIdAndDelete(req.params.id);
+    res.status(200).json("Advert has been successfully deleted!");
+  } catch (error) {
+    next(error);
+  }
+};

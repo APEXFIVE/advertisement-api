@@ -1,7 +1,7 @@
-export const permissions=[
+export const permissions = [
     {
-        role:'user',
-        actions:[
+        role: 'user',
+        actions: [
             'get_profile',
             'update_profile',
             'get_advert',
@@ -22,8 +22,20 @@ export const permissions=[
     },
 
     {
-        role:'admin',
-        actions:[
+        role: 'admin',
+        actions: [
+            'get_profile',
+            'update_profile',
+            'add_advert',
+            'update_advert',
+            'get_advert',
+            'get_adverts',
+            'delete_adverts'
+        ]
+    },
+    {
+        role: 'vendor',
+        actions: [
             'get_profile',
             'update_profile',
             'add_advert',
@@ -33,4 +45,6 @@ export const permissions=[
             'delete_adverts'
         ]
     }
+
+
 ]

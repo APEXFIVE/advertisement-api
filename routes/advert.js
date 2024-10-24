@@ -1,21 +1,24 @@
-import { Router } from "express";
-import { addAdverts, deleteAdvert, getAdverts, getOneAdvert, updateAdverts } from "../controllers/advert-controller.js";
-import { advertImageUpload } from "../middlewares/upload.js";
-import { isAuthenticated } from "../middlewares/auth.js";
+import express from 'express';
+import { addAdverts, getAdverts, getOneAdvert, updateAdverts, deleteAdvert } from '../controllers/advert-controller.js';
+import { isAuthenticated, isVendor } from '../middlewares/auth.js'; // Adjust the import path as needed
+import validate from '../middlewares/auth.js';
+import { advertImageUpload } from '../middlewares/upload.js';
+// import { addAdvertValidator, updateAdvertVAlidator } from '../validators/advert.js';
 
-// create router here
-const advertRouter = Router();
+const router = express.Router();
 
-// routes are defined here
-advertRouter.post("/adverts", isAuthenticated, advertImageUpload.single('image'), addAdverts);
+// Routes requiring authentication and vendor verification
+router.post('/adverts', 
+    isAuthenticated, 
+    isVendor, 
+    advertImageUpload.single('image'), // This middleware handles the image upload
+    // validate(addAdvertValidator), 
+    addAdverts
+);
+router.get('/adverts', getAdverts); // Anyone can access
+router.get('/adverts/:id', getOneAdvert); // Anyone can access
 
-advertRouter.get("/adverts", getAdverts);
+router.patch('/adverts/:id', isAuthenticated, isVendor, advertImageUpload.single('image'), updateAdverts);
+router.delete('/adverts/:id', isAuthenticated, isVendor, deleteAdvert);
 
-advertRouter.get("/adverts/:id", getOneAdvert)
-
-advertRouter.patch("/adverts/:id", isAuthenticated,  updateAdverts);
-
-advertRouter.delete("/adverts/:id", isAuthenticated, deleteAdvert)
-
-// export router
-export default advertRouter;
+export default router;

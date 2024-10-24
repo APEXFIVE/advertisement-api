@@ -38,6 +38,6 @@ userSchema.pre('save', function(next) {
 
 const User = model('User', userSchema);
 export const UserModel = User;
-
-
 export default User;
+
+
